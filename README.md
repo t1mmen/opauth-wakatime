@@ -2,7 +2,7 @@ Opauth-Wakatime
 =============
 [Opauth][1] strategy for Wakatime authentication.
 
-Implemented based on https://github.com/wakatimehq/api
+Implemented based on https://wakatime.com/developers v1 API.
 
 Getting started
 ----------------
@@ -41,7 +41,8 @@ Required parameters:
 <?php
 'Wakatime' => array(
 	'client_id' => 'YOUR CLIENT ID',
-	'client_secret' => 'YOUR CLIENT SECRET'
+	'client_secret' => 'YOUR CLIENT SECRET',
+  'scope' => 'email' // Is default – when setting yourself, remember to include email in scope!
 )
 ```
 

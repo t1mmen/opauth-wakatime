@@ -34,14 +34,15 @@ class WakatimeStrategy extends OpauthStrategy {
 	 * eg. array('scope' => 'email');
 	 */
 	public $defaults = array(
-		'redirect_uri' => '{complete_url_to_strategy}oauth2callback'
+		'redirect_uri' => '{complete_url_to_strategy}oauth2callback',
+		'scope' => 'email', // required to fetch user information
 	);
 
 	/**
 	 * Auth request
 	 */
 	public function request() {
-		$url = 'https://api.wakatimeapp.com/oauth2/authorize';
+		$url = 'https://wakatime.com/oauth/authorize';
 		$params = array(
 			'client_id' => $this->strategy['client_id'],
 			'redirect_uri' => $this->strategy['redirect_uri'],
@@ -61,7 +62,7 @@ class WakatimeStrategy extends OpauthStrategy {
 	public function oauth2callback() {
 		if (array_key_exists('code', $_GET) && !empty($_GET['code'])) {
 			$code = $_GET['code'];
-			$url = 'https://api.wakatimeapp.com/oauth2/token';
+			$url = 'https://wakatime.com/oauth/token';
 
 			$params = array(
 				'code' => $code,
@@ -80,23 +81,19 @@ class WakatimeStrategy extends OpauthStrategy {
 				$user = $this->user($results['access_token']);
 
 				$this->auth = array(
-					'uid' => $user['user']['id'],
+					'uid' => $user['data']['id'],
 					'info' => array(
-						'name' => $user['user']['first_name'].' '.$user['user']['last_name'],
-						'image' => $user['company']['base_uri'].$user['user']['avatar_url'],
+						'name' => $user['data']['display_name'],
+						'email' => $user['data']['email'],
+						'image' => $user['data']['photo'],
 					),
 					'credentials' => array(
 						'token' => $results['access_token'],
 						'refresh_token' =>  $results['refresh_token'],
 						'expires_in' =>  $results['expires_in'],
 					),
-					'raw' => $user
+					'raw' => $user['data']
 				);
-
-				$this->mapProfile($user, 'user.first_name', 'info.first_name'); // look into setting full name here
-				$this->mapProfile($user, 'user.last_name', 'info.last_name');
-				$this->mapProfile($user, 'user.email', 'info.email');
-				$this->mapProfile($user, 'company.base_uri', 'info.urls.base_uri');
 
 				$this->callback();
 			}
@@ -135,7 +132,7 @@ class WakatimeStrategy extends OpauthStrategy {
 		$options['http']['header'] = "Content-Type: application/json";
 		$options['http']['header'] .= "\r\nAccept: application/json";
 
-		$user = $this->serverGet('https://api.wakatimeapp.com/account/who_am_i', array('access_token' => $access_token), $options, $headers);
+		$user = $this->serverGet('https://wakatime.com/api/v1/users/current', array('access_token' => $access_token), $options, $headers);
 
 		if (!empty($user)) {
 			return $this->recursiveGetObjectVars(json_decode($user));
@@ -143,7 +140,7 @@ class WakatimeStrategy extends OpauthStrategy {
 		else {
 			$error = array(
 				'code' => 'userinfo_error',
-				'message' => 'Failed when attempting to query Wakatime API for user information',
+				'message' => 'Scope: email likely missing. Failed when attempting to query Wakatime API for user information.',
 				'raw' => array(
 					'response' => $user,
 					'headers' => $headers
