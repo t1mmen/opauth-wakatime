@@ -26,7 +26,7 @@ Getting started
    Then run `composer install`.
 
 
-2. Create Wakatime application at https://platform.wakatimeapp.com/oauth2_clients
+2. Create Wakatime application at https://wakatime.com/apps
 
 3. Configure Opauth-Wakatime strategy with at least `Client ID` and `Client Secret`.
 
@@ -49,6 +49,6 @@ Required parameters:
 License
 ---------
 Opauth-Wakatime is MIT Licensed
-Copyright © 2014 Timm Stokke (http://timm.stokke.me)
+Copyright © 2016 Timm Stokke (http://timm.stokke.me)
 
 [1]: https://github.com/opauth/opauth
