@@ -1,0 +1,22 @@
+{
+    "name": "t1mmen/opauth-wakatime",
+    "description": "Wakatime strategy for Opauth",
+    "keywords": ["authentication","auth","wakatime"],
+    "homepage": "https://github.com/t1mmen/opauth-wakatime",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Timm Stokke",
+            "email": "timm@stokke.me"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0",
+        "opauth/opauth": ">=0.2.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "."
+        }
+    }
+}
